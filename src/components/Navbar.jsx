@@ -1,81 +1,100 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  // Hamburger and close icons (using reliable free image CDNs)
-  const hamburgerIcon = "https://cdn-icons-png.flaticon.com/512/2976/2976215.png";
-  const closeIcon = "https://cdn-icons-png.flaticon.com/512/2961/2961937.png";
+  const closeMenu = () => setMenuOpen(false);
 
-  const navLinks = [
-    { name: "Home", path: "/" },
-    { name: "About", path: "/about" },
-    { name: "Academics", path: "/academics" },
-    { name: "Admissions", path: "/admissions" },
-    { name: "Gallery", path: "/gallery" },
-    { name: "Contact", path: "/contact" },
-  ];
+  const linkBase =
+    "block px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200";
+  const linkActive = "bg-blue-600 text-white";
+  const linkInactive =
+    "text-gray-700 hover:bg-gray-100 md:text-gray-600 md:hover:bg-gray-200 md:hover:text-gray-900";
 
   return (
-    <nav className="bg-white shadow-md fixed w-full z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo placeholder – replace with your actual logo */}
-          <div className="flex-shrink-0">
-            <Link to="/" className="text-xl font-bold text-blue-800">
-              🏫 Shunem Schools
-            </Link>
-            {/* Replace the line above with your image logo if needed:
-                <img src="/path/to/logo.png" alt="Shunem Schools Logo" className="h-10" />
-            */}
-          </div>
+    <nav className="bg-white border-b px-4 md:px-6 py-3 shadow-sm">
+      <div className="flex items-center justify-between">
+        {/* Brand */}
+        <h3 className="text-xl font-bold text-gray-800">Chamapawa</h3>
 
-          {/* Desktop menu */}
-          <div className="hidden md:flex space-x-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
-                className="text-gray-700 hover:text-blue-600 transition duration-300"
-              >
-                {link.name}
-              </Link>
-            ))}
-          </div>
-
-          {/* Mobile menu button (hamburger) */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="focus:outline-none"
-              aria-label="Toggle menu"
-            >
-              <img
-                src={isOpen ? closeIcon : hamburgerIcon}
-                alt={isOpen ? "Close menu" : "Open menu"}
-                className="w-6 h-6"
+        {/* Hamburger button (visible on small screens) */}
+        <button
+          className="md:hidden p-2 rounded-md text-gray-600 hover:bg-gray-100 focus:outline-none"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-expanded={menuOpen}
+          aria-label="Toggle navigation"
+        >
+          <svg
+            className="h-6 w-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            {menuOpen ? (
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
               />
-            </button>
-          </div>
+            ) : (
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            )}
+          </svg>
+        </button>
+
+        {/* Desktop links (hidden on small screens) */}
+        <div className="hidden md:flex items-center gap-2">
+          <NavLink
+            to="/dashboard"
+            end
+            className={({ isActive }) =>
+              `${linkBase} ${isActive ? linkActive : linkInactive}`
+            }
+          >
+            Dashboard
+          </NavLink>
+          <NavLink
+            to="/adminpanel"
+            className={({ isActive }) =>
+              `${linkBase} ${isActive ? linkActive : linkInactive}`
+            }
+          >
+            Admin Panel
+          </NavLink>
         </div>
       </div>
 
-      {/* Mobile dropdown menu */}
-      <div className={`md:hidden transition-all duration-300 ease-in-out ${isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0 overflow-hidden"}`}>
-        <div className="px-2 pt-2 pb-3 space-y-1 bg-white shadow-lg">
-          {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              to={link.path}
-              onClick={() => setIsOpen(false)}
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition"
-            >
-              {link.name}
-            </Link>
-          ))}
+      {/* Mobile menu (conditionally shown) */}
+      {menuOpen && (
+        <div className="mt-3 flex flex-col gap-1 md:hidden">
+          <NavLink
+            to="/dashboard"
+
+            onClick={closeMenu}
+            className={({ isActive }) =>
+              `${linkBase} ${isActive ? linkActive : linkInactive}`
+            }
+          >
+            Dashboard
+          </NavLink>
+          <NavLink
+            to="/adminpanel"
+            onClick={closeMenu}
+            className={({ isActive }) =>
+              `${linkBase} ${isActive ? linkActive : linkInactive}`
+            }
+          >
+            Admin Panel
+          </NavLink>
         </div>
-      </div>
+      )}
     </nav>
   );
 };
